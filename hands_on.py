@@ -36,13 +36,6 @@ def create_order(tx, orderid, shipname, customerid):
     '''
     tx.run(cypher_sql,orderid=orderid,shipname=shipname,customerid=customerid)
 
-def get_order_all(tx):
-    result = tx.run("MATCH (o:Order) return count(o)")
-    return result
-
-def delete_all_order(tx):
-    tx.run("MATCH (o:Order) DETACH DELETE o")
-
 # product
 # DataFrame column : ProductID, ProductName, UnitPrice
 def create_product(tx, product_id, product_name, unit_price):
@@ -98,13 +91,7 @@ def delete_all_node():
         for node in node_list:
             session.write_transaction(delete_node, node)
 
-def delete_node(tx, node):
-    cyphper_sql = '''
-        MATCH (n:{node})
-        detach delete n
-    '''.format(node=node)
-    print(cyphper_sql)
-    tx.run(cyphper_sql)
+
 
 def create_all_node():
     with driver.session() as session:
@@ -156,7 +143,6 @@ def create_index():
     "CALL db.awaitIndexes()"]
     for index_sql in index_list:
         result = run_query(index_sql)
-        print(result)
 
 ## Relation 생성 ##
 # Order와 Product 관계 생성
@@ -328,5 +314,3 @@ with driver.session() as session:
             "sell_count":product["count"]
         }
         print(tmp)
-
-# 어떤직원이 어떤 직원에게 보고하고 있는가?
